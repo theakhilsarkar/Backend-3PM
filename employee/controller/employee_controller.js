@@ -164,24 +164,30 @@ export const pagination = async (req, res) => {
 export const searchEmployee = async (req, res) => {
   try {
     const search = req.query;
+
     const filter = {};
 
-    Object.entries(search).forEach((obj) => {
-      filter.obj[0] = obj;
-    });
+    // Object.entries(search).forEach((obj) => {
+    //   filter[obj[0]] = obj[1];
+    // });
 
-    if (name) {
-      filter.name = name;
-    } else if (emp_id) {
-      filter.emp_id = emp_id;
-    } else if (role) {
-      filter.role = role;
-    } else if (salary) {
-      filter.salary = salary;
-    } else if (age) {
-      filter.age = age;
+    // console.log(filter);
+    // salary = 8999, order = min
+
+    console.log(search);
+    if (search.salary && search.order) {
+      if (search.order == "max") {
+        filter.salary = { $gte: search.salary };
+        console.log("----");
+      }
+      if (search.order == "min") {
+        filter.salary = { $lte: search.salary };
+      }
     }
-    const data = await Employee.find(filter);
+
+    console.log(filter);
+
+    const data = await Employee.find(filter).skip(2).limit(2);
 
     res.json({
       status: true,
